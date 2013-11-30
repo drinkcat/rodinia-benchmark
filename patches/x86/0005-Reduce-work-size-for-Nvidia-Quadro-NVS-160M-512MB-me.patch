@@ -1,0 +1,71 @@
+From 7bf24528edd202e75ec55eb03dad4a03e84edaf2 Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Fri, 22 Nov 2013 19:53:52 +0800
+Subject: [PATCH 5/5] Reduce work size for Nvidia Quadro NVS 160M (512MB
+ memory)
+
+---
+ opencl/heartwall/main.h                         |   2 +-
+ opencl/leukocyte/OpenCL/find_ellipse_opencl.c   |   2 +-
+ opencl/leukocyte/OpenCL/track_ellipse_kernel.cl |   4 +-
+ opencl/leukocyte/OpenCL/track_ellipse_opencl.c  |   2 +-
+ 5 files changed, 5 insertions(+), 267 deletions(-)
+ delete mode 100755 opencl/heartwall/main.h~
+
+diff --git a/opencl/heartwall/main.h b/opencl/heartwall/main.h
+index f8454ac..3c4cae2 100755
+--- a/opencl/heartwall/main.h
++++ b/opencl/heartwall/main.h
+@@ -4,7 +4,7 @@
+ 
+ #define fp float
+ 
+-#define NUMBER_THREADS 256
++#define NUMBER_THREADS 64
+ #define CHECK 37
+ // #define TEST_CHECKSUM
+ // #define TEST_OUTPUT
+diff --git a/opencl/leukocyte/OpenCL/find_ellipse_opencl.c b/opencl/leukocyte/OpenCL/find_ellipse_opencl.c
+index 4b0b3d2..1dfb89b 100755
+--- a/opencl/leukocyte/OpenCL/find_ellipse_opencl.c
++++ b/opencl/leukocyte/OpenCL/find_ellipse_opencl.c
+@@ -108,7 +108,7 @@ float *GICOV_OpenCL(int grad_m, int grad_n, float *host_grad_x, float *host_grad
+ 	clSetKernelArg(GICOV_kernel, 8, sizeof(cl_int), (void *) &local_work_size);
+ 	clSetKernelArg(GICOV_kernel, 9, sizeof(cl_int), (void *) &num_work_groups);
+ 
+-	size_t work_group_size = 256;
++	size_t work_group_size = 128;
+ 	size_t global_work_size = num_work_groups * local_work_size;
+ 	if(global_work_size % work_group_size > 0)
+ 	  global_work_size=(global_work_size / work_group_size+1)*work_group_size;
+diff --git a/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl b/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
+index 433a93c..9b08ba2 100755
+--- a/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
++++ b/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
+@@ -5,8 +5,8 @@
+ #define LAMBDA (8.0f * MU + 1.0f)
+ 
+ // The number of threads per thread block
+-#define LOCAL_WORK_SIZE 256
+-#define NEXT_LOWEST_POWER_OF_TWO 256
++#define LOCAL_WORK_SIZE 128
++#define NEXT_LOWEST_POWER_OF_TWO 128
+ 
+ 
+ // Regularized version of the Heaviside step function:
+diff --git a/opencl/leukocyte/OpenCL/track_ellipse_opencl.c b/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
+index 1e689ad..cf1fc00 100755
+--- a/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
++++ b/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
+@@ -17,7 +17,7 @@ cl_mem device_I_all, device_IMGVF_all;
+ size_t total_mem_size;
+ 
+ // The number of work items per work group
+-const size_t local_work_size = 256;
++const size_t local_work_size = 128;
+ 
+ 
+ 
+-- 
+1.8.4.2
+

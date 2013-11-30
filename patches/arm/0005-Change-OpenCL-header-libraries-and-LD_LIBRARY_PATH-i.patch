@@ -1,0 +1,47 @@
+From 621febb3baf22bd3a473d50df15b715a697272ed Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Sat, 30 Nov 2013 14:15:29 +0800
+Subject: [PATCH 5/7] Change OpenCL header libraries, and LD_LIBRARY_PATH in
+ runtest.
+
+---
+ common/make.config | 6 +++---
+ runtest            | 2 ++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/common/make.config b/common/make.config
+index d89e57f..d22b2f2 100755
+--- a/common/make.config
++++ b/common/make.config
+@@ -23,11 +23,11 @@ SDK_DIR =/if10/kw5na/NVIDIA_GPU_Computing_SDK4/C
+ # OPENCL_LIB = $(OPENCL_DIR)/OpenCL/common/lib -lOpenCL
+ 
+ # AMD_DIR
+-OPENCL_DIR = /if10/kw5na/Packages/AMD-APP-SDK-v2.8-RC-lnx64
++OPENCL_DIR = $(HOME)/mali/Mali_OpenCL_SDK_v1.1.0
+ OPENCL_INC = $(OPENCL_DIR)/include/ 
+-OPENCL_LIB = $(OPENCL_DIR)/lib/x86_64/ -lOpenCL
++OPENCL_LIB = $(OPENCL_DIR)/lib/ -lOpenCL
+ #ifeq ($(shell uname -m), x86_64)
+ #     ifeq ($(shell if test -d $(OPENCL_DIR)/lib/x86_64/; then echo T; else echo F; fi), T)
+ #     	OPENCL_LIB = $(OPENCL_DIR)/lib/x86_64/
+ #     endif
+-#endif
+\ No newline at end of file
++#endif
+diff --git a/runtest b/runtest
+index 10cf15c..2074c76 100644
+--- a/runtest
++++ b/runtest
+@@ -1,6 +1,8 @@
+ #!/bin/sh -e
+ # http://openbenchmarking.org/innhold/00729b51a56430434b9914ab551c47f849b85f2f
+ 
++export LD_LIBRARY_PATH=$HOME/mali/lib
++
+ NUM_CPU_CORES=${NUM_CPU_CORES:-2}
+ 
+ case $1 in
+-- 
+1.8.4.2
+

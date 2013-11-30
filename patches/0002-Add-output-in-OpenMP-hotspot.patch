@@ -1,0 +1,25 @@
+From ee65c008e66d56f9e0a8cb70b418a5d41400b621 Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Sat, 30 Nov 2013 14:03:25 +0800
+Subject: [PATCH 2/5] Add output in OpenMP hotspot.
+
+---
+ openmp/hotspot/hotspot_openmp.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/openmp/hotspot/hotspot_openmp.cpp b/openmp/hotspot/hotspot_openmp.cpp
+index dc94064..62f49fb 100755
+--- a/openmp/hotspot/hotspot_openmp.cpp
++++ b/openmp/hotspot/hotspot_openmp.cpp
+@@ -5,6 +5,8 @@
+ using namespace std;
+ #define STR_SIZE	256
+ 
++#define OUTPUT 1
++
+ /* maximum power density possible (say 300W for a 10mm x 10mm chip)	*/
+ #define MAX_PD	(3.0e6)
+ /* required precision in degrees	*/
+-- 
+1.8.4.2
+

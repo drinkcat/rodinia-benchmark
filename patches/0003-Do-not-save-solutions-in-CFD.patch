@@ -1,0 +1,39 @@
+From dbfb99da78350836cef60ad77a9ab6a489f7fe5a Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Sat, 30 Nov 2013 14:22:42 +0800
+Subject: [PATCH 3/5] Do not save solutions in CFD.
+
+---
+ opencl/cfd/euler3d.cpp     | 2 +-
+ openmp/cfd/euler3d_cpu.cpp | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/opencl/cfd/euler3d.cpp b/opencl/cfd/euler3d.cpp
+index bb55b6d..3cc5b9c 100755
+--- a/opencl/cfd/euler3d.cpp
++++ b/opencl/cfd/euler3d.cpp
+@@ -357,7 +357,7 @@ int main(int argc, char** argv){
+ 		}
+ 		_clFinish();
+ 		std::cout << "Saving solution..." << std::endl;
+-		dump(variables, nel, nelr);
++		//dump(variables, nel, nelr);
+ 		std::cout << "Saved solution..." << std::endl;
+ 		_clStatistics();
+ 		std::cout << "Cleaning up..." << std::endl;
+diff --git a/openmp/cfd/euler3d_cpu.cpp b/openmp/cfd/euler3d_cpu.cpp
+index 01a1d2b..7761eb4 100755
+--- a/openmp/cfd/euler3d_cpu.cpp
++++ b/openmp/cfd/euler3d_cpu.cpp
+@@ -458,7 +458,7 @@ int main(int argc, char** argv)
+ 
+ 
+ 	std::cout << "Saving solution..." << std::endl;
+-	dump(variables, nel, nelr);
++	//dump(variables, nel, nelr);
+ 	std::cout << "Saved solution..." << std::endl;
+ 
+ 
+-- 
+1.8.4.2
+

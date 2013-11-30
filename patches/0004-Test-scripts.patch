@@ -1,0 +1,103 @@
+From 4653665700f601fe89cd33996ff3717fe293090c Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Fri, 22 Nov 2013 21:18:59 +0800
+Subject: [PATCH 4/5] Test scripts.
+
+---
+ runall  | 12 ++++++++++++
+ runtest | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+)
+ create mode 100644 runall
+ create mode 100644 runtest
+
+diff --git a/runall b/runall
+new file mode 100644
+index 0000000..8bd31d3
+--- /dev/null
++++ b/runall
+@@ -0,0 +1,12 @@
++#!/bin/sh
++
++export NUM_CPU_CORES=2
++export OMP_NUM_THREADS=$NUM_CPU_CORES
++
++tests="`sed -n -e 's/.*"\(.*\)")/\1/p' runtest`"
++
++for test in $tests; do
++    echo "Running $test..."
++    ( time sh -e runtest "$test" ) > "run-$test.log" 2> "time-$test.log"
++    echo $? >> "time-$test.log"
++done
+diff --git a/runtest b/runtest
+new file mode 100644
+index 0000000..10cf15c
+--- /dev/null
++++ b/runtest
+@@ -0,0 +1,64 @@
++#!/bin/sh -e
++# http://openbenchmarking.org/innhold/00729b51a56430434b9914ab551c47f849b85f2f
++
++NUM_CPU_CORES=${NUM_CPU_CORES:-2}
++
++case $1 in
++	"OMP_CFD")
++		cd openmp/cfd
++		./euler3d_cpu ../../data/cfd/fvcorr.domn.097K
++	;;
++	"OCL_CFD")
++		cd opencl/cfd
++		./euler3d ../../data/cfd/fvcorr.domn.097K
++	;;
++	"OMP_HEARTWALL")
++		cd openmp/heartwall
++		./heartwall ../../data/heartwall/test.avi 15 $NUM_CPU_CORES
++	;;
++	"OCL_HEARTWALL")
++		cd opencl/heartwall
++		./heartwall 15
++	;;
++	"OMP_HOTSPOT")
++		cd openmp/hotspot
++		./hotspot 512 512 500 $NUM_CPU_CORES ../../data/hotspot/temp_512 ../../data/hotspot/power_512 > output
++	;;
++	"OCL_HOTSPOT")
++		cd opencl/hotspot
++		./hotspot 512 2 500 ../../data/hotspot/temp_512 ../../data/hotspot/power_512 output.out
++	;;
++	"OMP_KMEANS")
++		cd openmp/kmeans
++		./kmeans_openmp/kmeans -n $NUM_CPU_CORES -i ../../data/kmeans/204800.txt
++	;;
++	"OCL_KMEANS")
++		cd opencl/kmeans
++		./kmeans -i ../../data/kmeans/204800.txt
++	;;
++	"OMP_LAVAMD")
++		cd openmp/lavaMD
++		./lavaMD -cores $NUM_CPU_CORES -boxes1d 8
++	;;
++	"OCL_LAVAMD")
++		cd opencl/lavaMD
++		./lavaMD -boxes1d 8
++	;;
++	"OMP_LEUKOCYTE")
++		cd openmp/leukocyte
++		./OpenMP/leukocyte 20 $NUM_CPU_CORES ../../data/leukocyte/testfile.avi
++	;;
++	"OCL_LEUKOCYTE")
++		cd opencl/leukocyte/OpenCL
++		./leukocyte ../../../data/leukocyte/testfile.avi 20
++	;;
++	"OMP_PARTICLEFILTER")
++		cd openmp/particlefilter
++		./particle_filter -x 128 -y 128 -z 10 -np 100000
++	;;
++	"OCL_PARTICLEFILTER")
++		cd opencl/particlefilter
++		./OCL_particlefilter_single -x 128 -y 128 -z 10 -np 100000
++	;;
++esac
++
+-- 
+1.8.4.2
+

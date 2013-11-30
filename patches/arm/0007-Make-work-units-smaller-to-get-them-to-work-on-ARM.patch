@@ -1,0 +1,81 @@
+From 334eae0b7cd8c389043d40475e73cfe04b877b84 Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Sat, 30 Nov 2013 14:27:24 +0800
+Subject: [PATCH 7/7] Make work units smaller to get them to work on ARM.
+
+---
+ opencl/heartwall/main.h                         | 2 +-
+ opencl/hotspot/hotspot.h                        | 2 +-
+ opencl/hotspot/hotspot_kernel.cl                | 2 +-
+ opencl/leukocyte/OpenCL/track_ellipse_kernel.cl | 4 ++--
+ opencl/leukocyte/OpenCL/track_ellipse_opencl.c  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/opencl/heartwall/main.h b/opencl/heartwall/main.h
+index f8454ac..3c4cae2 100755
+--- a/opencl/heartwall/main.h
++++ b/opencl/heartwall/main.h
+@@ -4,7 +4,7 @@
+ 
+ #define fp float
+ 
+-#define NUMBER_THREADS 256
++#define NUMBER_THREADS 64
+ #define CHECK 37
+ // #define TEST_CHECKSUM
+ // #define TEST_OUTPUT
+diff --git a/opencl/hotspot/hotspot.h b/opencl/hotspot/hotspot.h
+index af1af5b..de27ec1 100755
+--- a/opencl/hotspot/hotspot.h
++++ b/opencl/hotspot/hotspot.h
+@@ -13,7 +13,7 @@
+ 
+ 
+ 
+-#define BLOCK_SIZE 16
++#define BLOCK_SIZE 8
+ #define STR_SIZE 256
+ # define EXPAND_RATE 2// add one iteration will extend the pyramid base by 2 per each borderline
+ 
+diff --git a/opencl/hotspot/hotspot_kernel.cl b/opencl/hotspot/hotspot_kernel.cl
+index 11fe441..414142a 100755
+--- a/opencl/hotspot/hotspot_kernel.cl
++++ b/opencl/hotspot/hotspot_kernel.cl
+@@ -1,5 +1,5 @@
+ 
+-#define BLOCK_SIZE 16
++#define BLOCK_SIZE 8
+ #define IN_RANGE(x, min, max)   ((x)>=(min) && (x)<=(max))
+ 
+ __kernel void hotspot(  int iteration,  //number of iteration
+diff --git a/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl b/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
+index 433a93c..fc4226b 100755
+--- a/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
++++ b/opencl/leukocyte/OpenCL/track_ellipse_kernel.cl
+@@ -5,8 +5,8 @@
+ #define LAMBDA (8.0f * MU + 1.0f)
+ 
+ // The number of threads per thread block
+-#define LOCAL_WORK_SIZE 256
+-#define NEXT_LOWEST_POWER_OF_TWO 256
++#define LOCAL_WORK_SIZE 64
++#define NEXT_LOWEST_POWER_OF_TWO 64
+ 
+ 
+ // Regularized version of the Heaviside step function:
+diff --git a/opencl/leukocyte/OpenCL/track_ellipse_opencl.c b/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
+index 1e689ad..8acd94d 100755
+--- a/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
++++ b/opencl/leukocyte/OpenCL/track_ellipse_opencl.c
+@@ -17,7 +17,7 @@ cl_mem device_I_all, device_IMGVF_all;
+ size_t total_mem_size;
+ 
+ // The number of work items per work group
+-const size_t local_work_size = 256;
++const size_t local_work_size = 64;
+ 
+ 
+ 
+-- 
+1.8.4.2
+

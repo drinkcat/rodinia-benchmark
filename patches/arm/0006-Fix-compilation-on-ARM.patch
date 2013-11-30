@@ -1,0 +1,73 @@
+From 8ede07c8cb5597254234b1569999c55275e9fe07 Mon Sep 17 00:00:00 2001
+From: Nicolas Boichat <nicolas@boichat.ch>
+Date: Sat, 30 Nov 2013 14:13:51 +0800
+Subject: [PATCH 6/7] Fix compilation on ARM.
+
+---
+ Makefile                       | 4 ++--
+ opencl/cfd/util.h              | 1 +
+ openmp/nn/Makefile             | 4 ++--
+ openmp/particlefilter/Makefile | 2 +-
+ 4 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 22fd346..0c0379d 100755
+--- a/Makefile
++++ b/Makefile
+@@ -49,12 +49,12 @@ OMP:
+ 	cd openmp/srad/srad_v2; 			make;   cp srad $(OMP_BIN_DIR)/srad_v2
+ 	cd openmp/streamcluster;			make;	cp sc_omp $(OMP_BIN_DIR)
+ 	cd openmp/particlefilter;			make;	cp particle_filter $(OMP_BIN_DIR)
+-	cd openmp/pathfinder;			make;	cp pathfinder $(OMP_BIN_DIR)
++#	cd openmp/pathfinder;			make;	cp pathfinder $(OMP_BIN_DIR)
+ #	cd openmp/mummergpu;  				make;	cp bin/mummergpu $(OMP_BIN_DIR)
+ 
+ OPENCL:
+ 	cd opencl/backprop;			make;	cp backprop $(OPENCL_BIN_DIR)
+-	cd opencl/bfs;				make;	cp bfs	    $(OPENCL_BIN_DIR)
++#	cd opencl/bfs;				make;	cp bfs	    $(OPENCL_BIN_DIR)
+ 	cd opencl/cfd;				make;	cp euler3d	$(OPENCL_BIN_DIR)
+ 	cd opencl/hotspot;			make;	cp hotspot	$(OPENCL_BIN_DIR)
+ 	cd opencl/kmeans;			make;	cp kmeans	$(OPENCL_BIN_DIR)
+diff --git a/opencl/cfd/util.h b/opencl/cfd/util.h
+index 7feef6e..7f9365a 100755
+--- a/opencl/cfd/util.h
++++ b/opencl/cfd/util.h
+@@ -4,6 +4,7 @@
+ #include <iostream>
+ #include <omp.h>
+ #include <sys/time.h>
++#include <stdlib.h>
+ 
+ using std::endl;
+ 
+diff --git a/openmp/nn/Makefile b/openmp/nn/Makefile
+index 1fa47c0..5259c0d 100755
+--- a/openmp/nn/Makefile
++++ b/openmp/nn/Makefile
+@@ -1,7 +1,7 @@
+ LOCAL_CC = gcc -g -O3 -Wall
+ CC = gcc
+-CFLAGS = -lm -fopenmp -Wall
+-
++CFLAGS = -fopenmp -Wall
++LDFLAGS = -lm
+ 
+ all : nn
+ 
+diff --git a/openmp/particlefilter/Makefile b/openmp/particlefilter/Makefile
+index 1acc787..aafe9d2 100755
+--- a/openmp/particlefilter/Makefile
++++ b/openmp/particlefilter/Makefile
+@@ -1,7 +1,7 @@
+ #makefile
+ 
+ openmp: ex_particle_OPENMP_seq.c
+-	gcc -lm -O3 -ffast-math -fopenmp ex_particle_OPENMP_seq.c -o particle_filter
++	gcc -O3 -ffast-math -fopenmp ex_particle_OPENMP_seq.c -o particle_filter -lm
+ 
+ 
+ icc_openmp: ex_particle_OPENMP_seq.c
+-- 
+1.8.4.2
+
