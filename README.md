@@ -42,7 +42,7 @@ make -j3 OMP OPENCL
 
 And finally run some selected benchmarks:
 ```
-bash runall
+sh runall
 ```
 
 

@@ -1,25 +1,24 @@
-From 4653665700f601fe89cd33996ff3717fe293090c Mon Sep 17 00:00:00 2001
+From 879dba283fa63192576e547f515a3f0d0e1a1e02 Mon Sep 17 00:00:00 2001
 From: Nicolas Boichat <nicolas@boichat.ch>
 Date: Fri, 22 Nov 2013 21:18:59 +0800
 Subject: [PATCH 4/5] Test scripts.
 
 ---
- runall  | 12 ++++++++++++
- runtest | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ runall  | 11 +++++++++++
+ runtest | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  2 files changed, 76 insertions(+)
  create mode 100644 runall
  create mode 100644 runtest
 
 diff --git a/runall b/runall
 new file mode 100644
-index 0000000..8bd31d3
+index 0000000..fd06070
 --- /dev/null
 +++ b/runall
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,11 @@
 +#!/bin/sh
 +
 +export NUM_CPU_CORES=2
-+export OMP_NUM_THREADS=$NUM_CPU_CORES
 +
 +tests="`sed -n -e 's/.*"\(.*\)")/\1/p' runtest`"
 +
@@ -30,14 +29,15 @@ index 0000000..8bd31d3
 +done
 diff --git a/runtest b/runtest
 new file mode 100644
-index 0000000..10cf15c
+index 0000000..fd080f6
 --- /dev/null
 +++ b/runtest
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,65 @@
 +#!/bin/sh -e
 +# http://openbenchmarking.org/innhold/00729b51a56430434b9914ab551c47f849b85f2f
 +
 +NUM_CPU_CORES=${NUM_CPU_CORES:-2}
++export OMP_NUM_THREADS=$NUM_CPU_CORES
 +
 +case $1 in
 +	"OMP_CFD")
@@ -46,7 +46,7 @@ index 0000000..10cf15c
 +	;;
 +	"OCL_CFD")
 +		cd opencl/cfd
-+		./euler3d ../../data/cfd/fvcorr.domn.097K
++		OMP_NUM_THREAD=1 ./euler3d ../../data/cfd/fvcorr.domn.097K
 +	;;
 +	"OMP_HEARTWALL")
 +		cd openmp/heartwall
